@@ -1,4 +1,4 @@
-# 📦 Almoxarifado — Sistema de Controle de Estoque
+# 📦 sistema de inventario — Sistema de Controle de Estoque
 
 Sistema completo de almoxarifado com visual corporativo ERP.  
 Backend: Python (Flask) · Banco: **SQLite** (embutido, sem instalação) · Frontend: HTML + CSS puro.
@@ -8,7 +8,7 @@ Backend: Python (Flask) · Banco: **SQLite** (embutido, sem instalação) · Fro
 ## Estrutura
 
 ```
-almoxarifado/
+Startup/
 ├── app.py
 ├── static/
 │   └── style.css
