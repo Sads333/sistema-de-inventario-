@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block topbar_title %}
+  <i class="bi bi-speedometer2" style="color: var(--primary-text)"></i>
+  Dashboard de Controle de Inventário
+{% endblock %}
+
+{% block content %}
+<div class="cards-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon blue"><i class="bi bi-boxes"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Itens Cadastrados</div>
+      <div class="stat-card-value">{{ total_itens }}</div>
+      <div class="stat-card-sub">SKUs ativos no sistema</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon green"><i class="bi bi-stack"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Saldo Total em Estoque</div>
+      <div class="stat-card-value primary">{{ total_estoque }}</div>
+      <div class="stat-card-sub">Unidades físicas armazenadas</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon red"><i class="bi bi-exclamation-triangle"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Ruptura de Estoque</div>
+      <div class="stat-card-value danger">{{ alertas }}</div>
+      <div class="stat-card-sub">Itens abaixo do nível mínimo</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon slate"><i class="bi bi-arrow-repeat"></i></div>
+    <div class="stat-card-body">
+      <div class="stat-card-label">Giro de Movimentações</div>
+      <div class="stat-card-value">{{ total_mov }}</div>
+      <div class="stat-card-sub">Registros nos últimos 30 dias</div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="bi bi-clock-history"></i> Fluxo Recente de Materiais</span>
+      <a href="{{ url_for('movimentacoes') }}" class="btn btn-outline btn-sm">
+        <i class="bi bi-list-ul"></i> Ver Relatório Completo
+      </a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Operação</th>
+            <th>Material</th>
+            <th>Qtd</th>
+            <th>Data/Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in recentes %}
+          <tr>
+            <td>
+              <span class="badge {% if m.tipo == 'entrada' %}badge-entrada{% else %}badge-saida{% endif %}">
+                <i class="bi bi-{{ 'arrow-down-circle' if m.tipo == 'entrada' else 'arrow-up-circle' }}"></i>
+                {{ m.tipo }}
+              </span>
+            </td>
+            <td><strong>{{ m.nome }}</strong></td>
+            <td>{{ m.quantidade }} {{ m.unidade }}</td>
+            <td class="td-muted">{{ m.data | fmt_date('%d/%m/%y %H:%M') }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="td-muted" style="text-align: center; padding: 32px">
+              Nenhuma movimentação recente registrada.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title" style="color: var(--danger-text)">
+        <i class="bi bi-exclamation-octagon"></i> Itens Críticos
+      </span>
+    </div>
+    <div class="critical-list">
+      {% for i in criticos %}
+      <div class="critical-item">
+        <div class="critical-item-header">
+          <span class="critical-item-name">{{ i.nome }}</span>
+          <span class="critical-item-qty">{{ i.quantidade }}</span>
+        </div>
+        <div class="progress-bar">
+          {% set pct = ((i.quantidade / i.quantidade_minima * 100) if i.quantidade_minima > 0 else 0) | round %}
+          <div class="progress-bar-fill" style="width: {{ pct if pct <= 100 else 100 }}%"></div>
+        </div>
+      </div>
+      {% else %}
+      <div class="critical-empty">
+        <i class="bi bi-check-circle"></i>
+        Nenhum item em nível crítico
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

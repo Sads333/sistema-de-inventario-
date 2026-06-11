@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Movimentações · Almoxarifado{% endblock %}
+
+{% block topbar_title %}
+  <i class="bi bi-arrow-left-right" style="color: var(--primary-text)"></i>
+  Histórico de Movimentações
+{% endblock %}
+
+{% block topbar_actions %}
+  <a href="{{ url_for('entrada') }}" class="btn btn-outline btn-sm">
+    <i class="bi bi-box-arrow-in-down"></i> Entrada
+  </a>
+  <a href="{{ url_for('saida') }}" class="btn btn-danger btn-sm">
+    <i class="bi bi-box-arrow-up"></i> Saída
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <form method="GET" action="{{ url_for('movimentacoes') }}">
+    <div class="filters">
+      <select name="tipo">
+        <option value="">Todos os tipos</option>
+        <option value="entrada" {{ 'selected' if tipo_sel == 'entrada' }}>Entradas</option>
+        <option value="saida"   {{ 'selected' if tipo_sel == 'saida' }}>Saídas</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i> Filtrar</button>
+      {% if tipo_sel %}
+        <a href="{{ url_for('movimentacoes') }}" class="btn btn-outline btn-sm"><i class="bi bi-x-lg"></i> Limpar</a>
+      {% endif %}
+      <span class="filters-count">{{ movimentacoes|length }} registro(s)</span>
+    </div>
+  </form>
+
+  <div class="panel-body">
+    {% if movimentacoes %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tipo</th>
+            <th>Item</th>
+            <th>Quantidade</th>
+            <th>Responsável</th>
+            <th>Observação</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in movimentacoes %}
+          <tr>
+            <td class="td-mono">#{{ m.id }}</td>
+            <td>
+              <span class="badge badge-{{ m.tipo }}">
+                <i class="bi bi-{{ 'arrow-down-circle' if m.tipo == 'entrada' else 'arrow-up-circle' }}"></i>
+                {{ m.tipo|capitalize }}
+              </span>
+            </td>
+            <td><strong>{{ m.nome }}</strong></td>
+            <td>
+              <strong>{{ m.quantidade }}</strong>
+              <span class="td-muted"> {{ m.unidade }}</span>
+            </td>
+            <td>{{ m.responsavel or '—' }}</td>
+            <td class="td-muted" style="max-width: 200px">{{ m.observacao or '—' }}</td>
+            <td class="td-muted" style="white-space: nowrap">{{ m.data | fmt_date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon"><i class="bi bi-arrow-repeat"></i></span>
+      <p>Nenhuma movimentação registrada</p>
+      <p class="empty-hint">Registre uma entrada ou saída para ver o histórico.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

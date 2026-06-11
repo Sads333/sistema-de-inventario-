@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block topbar_title %}
+  <i class="bi bi-{{ 'box-arrow-in-down' if tipo == 'entrada' else 'box-arrow-up' }}" style="color: {{ 'var(--success-text)' if tipo == 'entrada' else 'var(--danger-text)' }}"></i>
+  {{ 'Lançamento de Entrada' if tipo == 'entrada' else 'Lançamento de Saída' }}
+{% endblock %}
+
+{% block topbar_actions %}
+  <a href="{{ url_for('movimentacoes') }}" class="btn btn-outline btn-sm"><i class="bi bi-arrow-left"></i> Voltar</a>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">
+        <i class="bi bi-file-earmark-text"></i>
+        Documento de Movimentação
+      </span>
+      <span class="badge {% if tipo == 'entrada' %}badge-entrada{% else %}badge-saida{% endif %}">
+        {{ tipo|capitalize }}
+      </span>
+    </div>
+    <form method="POST">
+      <div class="form-group">
+        <label>Material / Insumo</label>
+        <select name="item_id" required>
+          <option value="">Selecione o item para movimentar...</option>
+          {% for item in itens %}
+            <option value="{{ item.id }}">{{ item.nome }} (Saldo: {{ item.quantidade }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantidade Operada</label>
+          <input type="number" name="quantidade" min="1" placeholder="0" required>
+        </div>
+        <div class="form-group">
+          <label>Operador / Responsável</label>
+          <input type="text" name="responsavel" placeholder="Nome do colaborador">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Centro de Custo / Observações</label>
+        <textarea name="observacao" rows="3" placeholder="Informações adicionais sobre a operação…"></textarea>
+      </div>
+
+      <div class="info-box">
+        <i class="bi bi-info-circle"></i>
+        <span>Esta operação atualizará o saldo físico imediatamente após a confirmação.</span>
+      </div>
+
+      <div class="form-footer">
+        <a href="{{ url_for('movimentacoes') }}" class="btn btn-outline">Cancelar</a>
+        <button type="submit" class="btn {% if tipo == 'entrada' %}btn-success{% else %}btn-danger{% endif %}">
+          <i class="bi bi-check-lg"></i> Confirmar Lançamento
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

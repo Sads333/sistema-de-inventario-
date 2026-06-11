@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Sistema de Almoxarifado{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <i class="bi bi-box-seam logo-icon"></i>
+      <span class="logo-text">Gestão Estoque</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Módulos de Gestão</div>
+      <a href="{{ url_for('dashboard') }}" class="sidebar-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="{{ url_for('itens') }}" class="sidebar-link {% if request.endpoint in ['itens','novo_item','editar_item'] %}active{% endif %}">
+        <i class="bi bi-journal-text"></i> Catálogo de Materiais
+      </a>
+      <a href="{{ url_for('movimentacoes') }}" class="sidebar-link {% if request.endpoint == 'movimentacoes' %}active{% endif %}">
+        <i class="bi bi-arrow-left-right"></i> Movimentações
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operações de Almoxarifado</div>
+      <a href="{{ url_for('entrada') }}" class="sidebar-link {% if request.endpoint == 'entrada' %}active{% endif %}">
+        <i class="bi bi-box-arrow-in-down"></i> Registrar Entrada
+      </a>
+      <a href="{{ url_for('saida') }}" class="sidebar-link {% if request.endpoint == 'saida' %}active{% endif %}">
+        <i class="bi bi-box-arrow-up"></i> Registrar Saída
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      Versão 2.4.0<br>© 2025 — Sistema ERP
+    </div>
+  </aside>
+
+  <div class="page">
+    <div class="topbar">
+      <span class="topbar-title">
+        {% block topbar_title %}{% endblock %}
+      </span>
+      <div class="topbar-actions">
+        {% block topbar_actions %}{% endblock %}
+      </div>
+    </div>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        <div class="alerts-container">
+          {% for cat, msg in msgs %}
+            <div class="alert alert-{{ 'error' if cat == 'error' else ('success' if cat == 'success' else 'info') }}">
+              <i class="bi bi-{{ 'exclamation-circle' if cat == 'error' else ('check-circle' if cat == 'success' else 'info-circle') }}"></i>
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="page-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+</body>
+</html>

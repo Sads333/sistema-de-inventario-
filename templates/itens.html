@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block topbar_title %}
+  <i class="bi bi-journal-text" style="color: var(--primary-text)"></i>
+  Catálogo de Materiais
+{% endblock %}
+
+{% block topbar_actions %}
+  <button class="btn btn-outline btn-sm"><i class="bi bi-file-earmark-excel"></i> Exportar</button>
+  <a href="{{ url_for('novo_item') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Novo Item</a>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-header panel-header-muted">
+    <form method="GET" class="search-bar">
+      <input type="text" name="busca" placeholder="Filtrar por nome ou SKU..." value="{{ request.args.get('busca', '') }}">
+      <select name="categoria">
+        <option value="">Todas as Categorias</option>
+        {% for cat in categorias %}
+          <option value="{{ cat }}" {{ 'selected' if request.args.get('categoria') == cat }}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i> Aplicar Filtros</button>
+    </form>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Descrição do Material</th>
+          <th>Categoria</th>
+          <th>Saldo Atual</th>
+          <th>Estoque Mín.</th>
+          <th>Status</th>
+          <th style="text-align: right">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in itens %}
+        <tr>
+          <td class="td-mono">#{{ "%04d" | format(item.id) }}</td>
+          <td class="item-cell">
+            <strong>{{ item.nome }}</strong>
+            <span>{{ item.unidade }}</span>
+          </td>
+          <td class="td-muted">{{ item.categoria }}</td>
+          <td><strong style="font-size: 15px">{{ item.quantidade }}</strong></td>
+          <td>{{ item.quantidade_minima }}</td>
+          <td>
+            {% if item.quantidade <= item.quantidade_minima %}
+              <span class="badge badge-critical"><i class="bi bi-exclamation-circle"></i> Crítico</span>
+            {% else %}
+              <span class="badge badge-stable"><i class="bi bi-check-circle"></i> Estável</span>
+            {% endif %}
+          </td>
+          <td class="td-actions">
+            <a href="{{ url_for('editar_item', id=item.id) }}" class="btn btn-outline btn-sm btn-icon" title="Editar">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{{ url_for('excluir_item', id=item.id) }}" class="btn btn-outline-danger btn-sm btn-icon" title="Excluir">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <span class="empty-icon"><i class="bi bi-inbox"></i></span>
+              <p>Nenhum item cadastrado</p>
+              <p class="empty-hint">Cadastre o primeiro material para começar o controle de estoque.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

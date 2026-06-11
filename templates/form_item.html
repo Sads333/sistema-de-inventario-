@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Editar' if item else 'Novo' }} Item · Almoxarifado{% endblock %}
+
+{% block topbar_title %}
+  <i class="bi bi-{{ 'pencil-square' if item else 'plus-circle' }}" style="color: var(--primary-text)"></i>
+  {{ 'Editar Item' if item else 'Cadastrar Item' }}
+{% endblock %}
+
+{% block topbar_actions %}
+  <a href="{{ url_for('itens') }}" class="btn btn-outline btn-sm"><i class="bi bi-arrow-left"></i> Voltar</a>
+{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">
+        <i class="bi bi-{{ 'pencil' if item else 'plus-lg' }}"></i>
+        {{ 'Editando: ' + item.nome if item else 'Novo Item' }}
+      </span>
+      {% if item %}
+        <span class="info-chip"><i class="bi bi-hash"></i> ID {{ item.id }}</span>
+      {% endif %}
+    </div>
+    <div class="panel-body padded">
+
+      <form method="POST"
+            action="{{ url_for('editar_item', id=item.id) if item else url_for('novo_item') }}">
+
+        <p class="form-section-title">Identificação</p>
+
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Nome do Item *</label>
+            <input type="text" name="nome"
+                   value="{{ item.nome if item else '' }}"
+                   placeholder="Ex: Cimento CP-II 50kg" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Categoria *</label>
+            <input type="text" name="categoria"
+                   value="{{ item.categoria if item else '' }}"
+                   placeholder="Ex: Cimento, Ferragem…" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Unidade *</label>
+            <select name="unidade">
+              {% for u in ['Und','Saco','Caixa','Barra','m³','m²','m','kg','L','Painel','Rolo','Par','Fardo'] %}
+                <option value="{{ u }}" {{ 'selected' if item and item.unidade == u else '' }}>{{ u }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <p class="form-section-title" style="margin-top: 28px">Estoque</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Quantidade {{ 'Atual' if item else 'Inicial' }}</label>
+            <input type="number" name="quantidade"
+                   value="{{ item.quantidade if item else 0 }}" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Quantidade Mínima</label>
+            <input type="number" name="quantidade_minima"
+                   value="{{ item.quantidade_minima if item else 5 }}" min="0" required>
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">Descrição (opcional)</label>
+            <textarea name="descricao"
+                      placeholder="Observações, especificações técnicas…">{{ item.descricao if item else '' }}</textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i>
+            {{ 'Salvar Alterações' if item else 'Cadastrar Item' }}
+          </button>
+          <a href="{{ url_for('itens') }}" class="btn btn-outline">Cancelar</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

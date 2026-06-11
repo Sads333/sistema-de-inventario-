@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Sistema de Almoxarifado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary:        #3b82f6;
+      --primary-dark:   #2563eb;
+      --primary-text:   #93c5fd;
+      --border-color:   rgba(255, 255, 255, 0.08);
+      --border-strong:  rgba(255, 255, 255, 0.14);
+      --text-main:      #e8edf5;
+      --text-muted:     #8b9cb3;
+      --text-subtle:    #5c6b82;
+      --bg-body:        #0b0f17;
+      --surface:        #131a27;
+      --surface-raised: #1a2234;
+      --input-bg:       #0f1520;
+      --input-border:   rgba(255, 255, 255, 0.1);
+      --danger-light:   rgba(239, 68, 68, 0.14);
+      --danger-text:    #f87171;
+      --danger-border:  rgba(239, 68, 68, 0.25);
+      --success-light:  rgba(34, 197, 94, 0.14);
+      --success-text:   #4ade80;
+      --success-border: rgba(34, 197, 94, 0.25);
+      --radius:         8px;
+      --radius-sm:      6px;
+      --shadow-lg:      0 8px 32px rgba(0, 0, 0, 0.55);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { color-scheme: dark; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .login-brand {
+      width: 440px;
+      flex-shrink: 0;
+      background: linear-gradient(160deg, #060a10 0%, #0d1320 60%, #060a10 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-brand::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .brand-logo i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      background: rgba(37, 99, 235, 0.15);
+      border-radius: var(--radius-sm);
+      font-size: 20px;
+      color: #60a5fa;
+    }
+
+    .brand-logo-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-body {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f8fafc;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+    }
+
+    .brand-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .brand-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .brand-feature i {
+      color: #60a5fa;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .brand-footer {
+      font-size: 11px;
+      color: var(--text-subtle);
+      position: relative;
+    }
+
+    .login-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 32px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-card-header { margin-bottom: 32px; }
+
+    .login-card-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .login-card-header p { font-size: 14px; color: var(--text-muted); }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid transparent;
+    }
+
+    .alert-error   { background: var(--danger-light);  border-color: var(--danger-border);  color: var(--danger-text); }
+    .alert-success { background: var(--success-light); border-color: var(--success-border); color: var(--success-text); }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 7px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap .icon-left {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 10px 12px 10px 38px;
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text-main);
+      background: var(--input-bg);
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+
+    .input-wrap input::placeholder { color: var(--text-subtle); }
+
+    .input-wrap input:hover { border-color: var(--border-strong); }
+
+    .input-wrap input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    .toggle-pwd {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-subtle);
+      font-size: 15px;
+      transition: color 0.15s;
+    }
+
+    .toggle-pwd:hover { color: var(--text-main); }
+
+    .input-wrap input[type="password"],
+    .input-wrap input.has-toggle { padding-right: 38px; }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      font-size: 13px;
+      color: var(--primary-text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover { text-decoration: underline; }
+
+    .btn-login {
+      width: 100%;
+      padding: 11px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.18s, box-shadow 0.18s;
+      box-shadow: 0 1px 3px rgba(59, 130, 246, 0.35);
+    }
+
+    .btn-login:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-version {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 800px) {
+      .login-brand { display: none; }
+      .login-main  { padding: 32px 20px; }
+      .login-card  { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="login-brand">
+    <div class="brand-logo">
+      <i class="bi bi-box-seam"></i>
+      <span class="brand-logo-text">Gestão Estoque</span>
+    </div>
+
+    <div class="brand-body">
+      <h2 class="brand-title">Controle total do seu almoxarifado</h2>
+      <p class="brand-desc">
+        Plataforma integrada para gestão de materiais, movimentações e relatórios em tempo real.
+      </p>
+      <div class="brand-features">
+        <div class="brand-feature"><i class="bi bi-check2-circle"></i> Controle de entradas e saídas</div>
+        <div class="brand-feature"><i class="bi bi-check2-circle"></i> Alertas de estoque mínimo</div>
+        <div class="brand-feature"><i class="bi bi-check2-circle"></i> Histórico completo de movimentações</div>
+        <div class="brand-feature"><i class="bi bi-check2-circle"></i> Dashboard com indicadores em tempo real</div>
+      </div>
+    </div>
+
+    <div class="brand-footer">Versão 2.4.0 · © 2025 Sistema ERP</div>
+  </aside>
+
+  <main class="login-main">
+    <div class="login-card">
+      <div class="login-card-header">
+        <h1>Entrar no sistema</h1>
+        <p>Informe suas credenciais de acesso para continuar.</p>
+      </div>
+
+      {% with msgs = get_flashed_messages(with_categories=true) %}
+        {% if msgs %}
+          {% for cat, msg in msgs %}
+            <div class="alert alert-{{ 'error' if cat == 'error' else 'success' }}">
+              <i class="bi bi-{{ 'exclamation-circle' if cat == 'error' else 'check-circle' }}"></i>
+              {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+          <label for="usuario">Usuário</label>
+          <div class="input-wrap">
+            <i class="bi bi-person icon-left"></i>
+            <input type="text" id="usuario" name="usuario"
+                   placeholder="Digite seu usuário"
+                   autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <div class="input-wrap">
+            <i class="bi bi-lock icon-left"></i>
+            <input type="password" id="senha" name="senha"
+                   class="has-toggle"
+                   placeholder="Digite sua senha"
+                   autocomplete="current-password" required>
+            <i class="bi bi-eye toggle-pwd" id="toggleSenha" title="Mostrar/ocultar senha"></i>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember">
+            <input type="checkbox" name="lembrar"> Lembrar acesso
+          </label>
+          <a href="#" class="forgot-link">Esqueci a senha</a>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="bi bi-box-arrow-in-right"></i> Acessar sistema
+        </button>
+      </form>
+
+      <p class="login-version">Sistema de Almoxarifado · Acesso restrito</p>
+    </div>
+  </main>
+
+  <script>
+    const toggle = document.getElementById('toggleSenha');
+    const campo  = document.getElementById('senha');
+    toggle.addEventListener('click', () => {
+      const visivel = campo.type === 'text';
+      campo.type = visivel ? 'password' : 'text';
+      toggle.className = `bi bi-${visivel ? 'eye' : 'eye-slash'} toggle-pwd`;
+    });
+  </script>
+
+</body>
+</html>
